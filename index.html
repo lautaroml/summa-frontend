@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Summa - front-end</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <style>
+        body {
+            color: dimgrey;
+            background: #eee;
+        }
+        header h1 {
+            font-weight: 300;
+        }
+    </style>
+</head>
+<body>
+<div class="container p-2">
+    <div class="row my-5">
+        <header role="banner" class="text-center">
+            <h1 class="mb-3">Summa Solutions - Fed Test</h1>
+            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus, ea, magnam! Earum facilis fuga iure mollitia soluta sunt temporibus vel? Cupiditate error, eveniet illum non saepe similique tempore unde voluptates.</p>
+        </header>
+    </div>
+    <div class="row" id="images"></div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script>
+    let last_8_albums = [];
+    (function() {
+        var api = "https://jsonplaceholder.typicode.com/photos";
+        $.getJSON( api, {
+            tags: "mount rainier",
+            tagmode: "any",
+            format: "json"
+        })
+            .done(function( data ) {
+                let last_album = data.slice(-1)[0];
+
+                for (i = last_album.albumId; i > last_album.albumId - 8; i--) {
+
+                    arr = jQuery.grep(data, function( a ) {
+                        return a.albumId === i;
+                    });
+
+                    last_8_albums.push(
+                        {
+                            last: arr.slice(-1)[0],
+                            forerunner: arr.slice(-2)[0]
+                        }
+                    );
+                }
+
+                $.each( last_8_albums, function( i, item ) {
+                    card = "<div class=\"col-xl-3 col-lg-3 col-md-4 col-sm-6 col-6 \">\n" +
+                        "<div class=\"card mb-4 shadow-md media\">\n" +
+                        "<img src='"+item.last.thumbnailUrl+"' class=\"card-img-top\" alt=\"...\">\n" +
+                        "<div class=\"card-body w-100\">\n" +
+                        "<p class=\"card-text\">AlbumId: "+item.last.albumId+"</p>\n" +
+                        "<p class=\"card-text\">Id: "+item.last.id+"</p>\n" +
+                        "<p class=\"card-text\">"+item.last.title.substring(0, 15)+"</p>\n" +
+                        "<button type=\"button\" class=\"btn btn-primary btn-block rounded\">Primary</button>"+
+                        "<div class=\"d-flex justify-content-between align-items-center\">\n" +
+                        "</div>\n" +
+                        "</div>\n" +
+                        "</div>\n" +
+                        "</div>";
+                    $( "#images" ).append(card);
+                });
+            });
+    })();
+</script>
+</body>
+</html>
